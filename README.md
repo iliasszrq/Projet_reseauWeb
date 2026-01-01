@@ -362,14 +362,14 @@ return [
 
 ## 📅 Planning Prévisionnel
 
-| Semaine | Tâches |
-|---------|--------|
-| **S1** | Setup projet, BDD, authentification |
-| **S2** | Module demandes, upload fichiers |
-| **S3** | Module planning, calendrier |
-| **S4** | Module admin, notifications |
-| **S5** | Statistiques, rapports |
-| **S6** | Tests, documentation, déploiement |
+| Tâches |
+|--------|
+|Setup projet, BDD, authentification |
+|Module demandes, upload fichiers |
+|Module planning, calendrier |
+|Module admin, notifications |
+|Statistiques, rapports |
+|Tests, documentation, déploiement |
 
 ---
 
