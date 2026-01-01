@@ -388,6 +388,3 @@ Projet académique - EIDIA 2025
 
 ---
 
-<p align="center">
-  <strong>Développé avec ❤️ par l'équipe GestioSeances</strong>
-</p>
