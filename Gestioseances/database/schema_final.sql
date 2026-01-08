@@ -1,8 +1,3 @@
--- ============================================
--- GestioSeances - Script COMPLET FINAL
--- Fusion Dev 1 + Dev 2 + Dev 4
--- Mot de passe : password123
--- ============================================
 
 DROP DATABASE IF EXISTS gestioseances;
 
@@ -12,9 +7,9 @@ COLLATE utf8mb4_unicode_ci;
 
 USE gestioseances;
 
--- ============================================
+
 -- TABLE: users
--- ============================================
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -35,9 +30,7 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ============================================
 -- TABLE: matieres
--- ============================================
 CREATE TABLE matieres (
     id INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(20) NOT NULL UNIQUE,
@@ -49,9 +42,7 @@ CREATE TABLE matieres (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ============================================
 -- TABLE: salles
--- ============================================
 CREATE TABLE salles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
@@ -62,9 +53,9 @@ CREATE TABLE salles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- ============================================
+
 -- TABLE: seances
--- ============================================
+
 CREATE TABLE seances (
     id INT AUTO_INCREMENT PRIMARY KEY,
     professeur_id INT NOT NULL,
@@ -87,9 +78,8 @@ CREATE TABLE seances (
     INDEX idx_seances_jour (jour)
 ) ENGINE=InnoDB;
 
--- ============================================
 -- TABLE: demandes
--- ============================================
+
 CREATE TABLE demandes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     professeur_id INT NOT NULL,
@@ -119,9 +109,8 @@ CREATE TABLE demandes (
     INDEX idx_demandes_date (created_at)
 ) ENGINE=InnoDB;
 
--- ============================================
 -- TABLE: validations
--- ============================================
+
 CREATE TABLE validations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     demande_id INT NOT NULL,
@@ -138,9 +127,9 @@ CREATE TABLE validations (
     INDEX idx_validations_demande (demande_id)
 ) ENGINE=InnoDB;
 
--- ============================================
+
 -- TABLE: pieces_jointes
--- ============================================
+
 CREATE TABLE pieces_jointes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     demande_id INT NOT NULL,
@@ -154,9 +143,9 @@ CREATE TABLE pieces_jointes (
     FOREIGN KEY (demande_id) REFERENCES demandes(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ============================================
+
 -- TABLE: notifications
--- ============================================
+
 CREATE TABLE notifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -174,10 +163,10 @@ CREATE TABLE notifications (
     INDEX idx_notifications_user (user_id, lue)
 ) ENGINE=InnoDB;
 
--- ============================================
+
 -- DONNÉES DE TEST
 -- Mot de passe : password123
--- ============================================
+
 
 INSERT INTO users (nom, prenom, email, password, role, telephone, departement, actif) VALUES
 ('Alami', 'Hassan', 'hassan.alami@eidia.ma', '$2y$10$iqdCSUN.EH3.n/hfycZOu.UDIL7ZBv0HMxi1ioMEG039qidkah3mW', 'directeur', '0661234567', 'Direction', 1),
