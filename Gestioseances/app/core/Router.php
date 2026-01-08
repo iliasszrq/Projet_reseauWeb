@@ -1,8 +1,4 @@
 <?php
-/**
- * Classe Router - Système de routage
- * Amélioré pour gérer les routes dynamiques (/demandes/5, etc.)
- */
 
 class Router
 {
@@ -26,30 +22,26 @@ class Router
 
         $httpMethod = $_SERVER['REQUEST_METHOD'];
 
-        // Chercher une route exacte
         if (isset($this->routes[$httpMethod][$uri])) {
             $this->dispatch($this->routes[$httpMethod][$uri]);
             return;
         }
 
-        // Chercher une route avec paramètre dynamique
         foreach ($this->routes[$httpMethod] ?? [] as $route => $handler) {
             $pattern = $this->convertToRegex($route);
             if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches); // Enlever le match complet
+                array_shift($matches);
                 $this->dispatch($handler, $matches);
                 return;
             }
         }
 
-        // 404
         http_response_code(404);
         $this->show404();
     }
 
     private function convertToRegex(string $route): string
     {
-        // Convertir {id} en regex (\d+)
         $pattern = preg_replace('/\{([a-zA-Z]+)\}/', '([^/]+)', $route);
         return '#^' . $pattern . '$#';
     }
@@ -59,7 +51,7 @@ class Router
         [$controllerName, $method] = $handler;
 
         $controllerFile = APP_ROOT . '/app/controllers/' . $controllerName . '.php';
-        
+
         if (!file_exists($controllerFile)) {
             die("Contrôleur non trouvé : {$controllerName}");
         }

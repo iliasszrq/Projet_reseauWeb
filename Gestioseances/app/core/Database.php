@@ -1,8 +1,4 @@
 <?php
-/**
- * Classe Database - Connexion PDO à MySQL
- * Fusion Dev 1 + Dev 2
- */
 
 class Database
 {
@@ -13,7 +9,7 @@ class Database
     {
         try {
             $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-            
+
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -44,18 +40,12 @@ class Database
         return $this->pdo;
     }
 
-    /**
-     * Exécuter une requête préparée (INSERT, UPDATE, DELETE)
-     */
     public function execute(string $sql, array $params = []): bool
     {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($params);
     }
 
-    /**
-     * Récupérer plusieurs lignes
-     */
     public function fetchAll(string $sql, array $params = []): array
     {
         $stmt = $this->pdo->prepare($sql);
@@ -63,9 +53,6 @@ class Database
         return $stmt->fetchAll();
     }
 
-    /**
-     * Récupérer une seule ligne
-     */
     public function fetch(string $sql, array $params = []): ?array
     {
         $stmt = $this->pdo->prepare($sql);
@@ -74,17 +61,11 @@ class Database
         return $result ?: null;
     }
 
-    /**
-     * Obtenir le dernier ID inséré
-     */
     public function lastInsertId(): int
     {
         return (int) $this->pdo->lastInsertId();
     }
 
-    /**
-     * Compter les résultats
-     */
     public function count(string $sql, array $params = []): int
     {
         $stmt = $this->pdo->prepare($sql);
@@ -92,25 +73,16 @@ class Database
         return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * Démarrer une transaction
-     */
     public function beginTransaction(): bool
     {
         return $this->pdo->beginTransaction();
     }
 
-    /**
-     * Valider une transaction
-     */
     public function commit(): bool
     {
         return $this->pdo->commit();
     }
 
-    /**
-     * Annuler une transaction
-     */
     public function rollback(): bool
     {
         return $this->pdo->rollBack();

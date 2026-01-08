@@ -1,7 +1,5 @@
 <?php
-/**
- * Page de connexion
- */
+
 $pageTitle = 'Connexion';
 ?>
 <!DOCTYPE html>
@@ -61,7 +59,7 @@ $pageTitle = 'Connexion';
             <h4 class="mb-0"><?= APP_NAME ?></h4>
             <small>Gestion des demandes de séances</small>
         </div>
-        
+
         <div class="login-body">
             <?php if (!empty($flash['danger'])): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -69,7 +67,7 @@ $pageTitle = 'Connexion';
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-            
+
             <?php if (!empty($flash['success'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= Security::e($flash['success']) ?>
@@ -79,34 +77,34 @@ $pageTitle = 'Connexion';
 
             <form method="POST" action="<?= APP_URL ?>/login">
                 <?php Security::csrfField(); ?>
-                
+
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="email" name="email" 
                            placeholder="email@example.com" required autofocus>
                     <label for="email"><i class="bi bi-envelope"></i> Adresse email</label>
                 </div>
-                
+
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password" name="password" 
                            placeholder="Mot de passe" required>
                     <label for="password"><i class="bi bi-lock"></i> Mot de passe</label>
                 </div>
-                
+
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-primary btn-login">
                         <i class="bi bi-box-arrow-in-right"></i> Se connecter
                     </button>
                 </div>
-                
+
                 <div class="text-center">
                     <a href="<?= APP_URL ?>/forgot-password" class="text-decoration-none">
                         Mot de passe oublié ?
                     </a>
                 </div>
             </form>
-            
+
             <hr class="my-4">
-            
+
             <div class="text-center text-muted small">
                 <p class="mb-1"><strong>Comptes de test :</strong></p>
                 <p class="mb-0">prof@uemf.ac.ma / password123</p>

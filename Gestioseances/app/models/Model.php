@@ -1,7 +1,4 @@
 <?php
-/**
- * Classe Model - Classe de base pour tous les modèles
- */
 
 class Model
 {
@@ -30,10 +27,10 @@ class Model
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
-        
+
         $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
         $this->db->execute($sql, $data);
-        
+
         return $this->db->lastInsertId();
     }
 
@@ -44,10 +41,10 @@ class Model
             $setParts[] = "{$column} = :{$column}";
         }
         $setString = implode(', ', $setParts);
-        
+
         $sql = "UPDATE {$this->table} SET {$setString} WHERE {$this->primaryKey} = :id";
         $data['id'] = $id;
-        
+
         return $this->db->execute($sql, $data);
     }
 

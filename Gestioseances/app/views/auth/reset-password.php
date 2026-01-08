@@ -1,7 +1,5 @@
 <?php
-/**
- * Page réinitialisation mot de passe
- */
+
 $pageTitle = 'Réinitialiser le mot de passe';
 ?>
 <!DOCTYPE html>
@@ -35,7 +33,7 @@ $pageTitle = 'Réinitialiser le mot de passe';
                 <i class="bi bi-shield-lock text-primary" style="font-size: 3rem;"></i>
                 <h4 class="mt-2">Nouveau mot de passe</h4>
             </div>
-            
+
             <?php if (!empty($flash['danger'])): ?>
             <div class="alert alert-danger">
                 <?= Security::e($flash['danger']) ?>
@@ -45,19 +43,19 @@ $pageTitle = 'Réinitialiser le mot de passe';
             <form method="POST" action="<?= APP_URL ?>/reset-password">
                 <?php Security::csrfField(); ?>
                 <input type="hidden" name="token" value="<?= Security::e($token ?? '') ?>">
-                
+
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password" name="password" 
                            placeholder="Nouveau mot de passe" required minlength="8">
                     <label for="password">Nouveau mot de passe</label>
                 </div>
-                
+
                 <div class="form-floating mb-3">
                     <input type="password" class="form-control" id="password_confirm" name="password_confirm" 
                            placeholder="Confirmer le mot de passe" required>
                     <label for="password_confirm">Confirmer le mot de passe</label>
                 </div>
-                
+
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-check-lg"></i> Réinitialiser

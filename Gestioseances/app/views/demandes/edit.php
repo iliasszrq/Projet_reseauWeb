@@ -1,7 +1,5 @@
 <?php
-/**
- * Formulaire de modification d'une demande
- */
+
 $pageTitle = 'Modifier demande #' . ($demande['id'] ?? '');
 ?>
 <?php ob_start(); ?>
@@ -27,7 +25,7 @@ $pageTitle = 'Modifier demande #' . ($demande['id'] ?? '');
 
                     <form method="POST" action="<?= APP_URL ?>/demandes/<?= $demande['id'] ?>/update" enctype="multipart/form-data">
                         <?php Security::csrfField(); ?>
-                        
+
                         <!-- Type -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Type de demande *</label>

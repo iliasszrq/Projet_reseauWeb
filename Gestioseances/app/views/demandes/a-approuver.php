@@ -1,7 +1,5 @@
 <?php
-/**
- * Demandes à approuver (Directeur)
- */
+
 $pageTitle = 'Demandes à approuver';
 ?>
 <?php ob_start(); ?>

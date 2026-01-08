@@ -1,16 +1,12 @@
 <?php
-/**
- * Liste des demandes du professeur
- */
+
 $pageTitle = 'Mes demandes';
 
-// Récupérer les données pour la page
 $isLoggedIn = Session::isLoggedIn();
 $userRole = Session::get('user_role');
 $userNom = Session::get('user_nom');
 $userPrenom = Session::get('user_prenom');
 
-// Notifications count
 $notifCount = 0;
 if ($isLoggedIn) {
     $notifModel = new Notification();

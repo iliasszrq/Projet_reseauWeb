@@ -1,55 +1,25 @@
 <?php
-/**
- * Modèle PieceJointe
- * Gère les fichiers uploadés associés aux demandes
- * 
- * Place ce fichier dans : app/models/PieceJointe.php
- * 
- * @author Dev 2
- */
 
 class PieceJointe extends Model
 {
     protected $table = 'pieces_jointes';
 
-    // ============================================
-    // MÉTHODES DE RÉCUPÉRATION
-    // ============================================
-
-    /**
-     * Récupérer toutes les pièces jointes d'une demande
-     */
     public function findByDemande(int $demandeId): array
     {
         $sql = "SELECT * FROM pieces_jointes 
                 WHERE demande_id = :demande_id 
                 ORDER BY created_at ASC";
-        
+
         return $this->db->fetchAll($sql, ['demande_id' => $demandeId]);
     }
 
-    /**
-     * Compter les pièces jointes d'une demande
-     */
     public function countByDemande(int $demandeId): int
     {
         return $this->countWhere('demande_id', $demandeId);
     }
 
-    // ============================================
-    // MÉTHODES D'UPLOAD
-    // ============================================
-
-    /**
-     * Uploader un fichier et l'enregistrer en BDD
-     * 
-     * @param int $demandeId ID de la demande
-     * @param array $file Tableau $_FILES['nom_du_champ']
-     * @return array ['success' => bool, 'message' => string, 'id' => int|null]
-     */
     public function uploader(int $demandeId, array $file): array
     {
-        // Vérifier les erreurs d'upload
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return [
                 'success' => false,
@@ -58,7 +28,6 @@ class PieceJointe extends Model
             ];
         }
 
-        // Vérifier la taille
         if ($file['size'] > MAX_FILE_SIZE) {
             return [
                 'success' => false,
@@ -67,7 +36,6 @@ class PieceJointe extends Model
             ];
         }
 
-        // Vérifier l'extension
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, ALLOWED_EXTENSIONS)) {
             return [
@@ -77,7 +45,6 @@ class PieceJointe extends Model
             ];
         }
 
-        // Vérifier le type MIME
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
@@ -98,17 +65,14 @@ class PieceJointe extends Model
             ];
         }
 
-        // Créer le dossier de destination si nécessaire
         $uploadDir = UPLOAD_PATH . $demandeId . '/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // Générer un nom de fichier unique
         $nomFichier = uniqid() . '_' . time() . '.' . $extension;
         $cheminComplet = $uploadDir . $nomFichier;
 
-        // Déplacer le fichier
         if (!move_uploaded_file($file['tmp_name'], $cheminComplet)) {
             return [
                 'success' => false,
@@ -117,7 +81,6 @@ class PieceJointe extends Model
             ];
         }
 
-        // Enregistrer en BDD
         $id = $this->create([
             'demande_id' => $demandeId,
             'nom_original' => $file['name'],
@@ -134,21 +97,17 @@ class PieceJointe extends Model
         ];
     }
 
-    /**
-     * Uploader plusieurs fichiers
-     */
     public function uploaderMultiple(int $demandeId, array $files): array
     {
         $resultats = [];
-        
-        // Réorganiser le tableau $_FILES pour plusieurs fichiers
+
         $fileCount = count($files['name']);
-        
+
         for ($i = 0; $i < $fileCount; $i++) {
             if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) {
-                continue; // Ignorer les champs vides
+                continue;
             }
-            
+
             $file = [
                 'name' => $files['name'][$i],
                 'type' => $files['type'][$i],
@@ -156,20 +115,13 @@ class PieceJointe extends Model
                 'error' => $files['error'][$i],
                 'size' => $files['size'][$i]
             ];
-            
+
             $resultats[] = $this->uploader($demandeId, $file);
         }
-        
+
         return $resultats;
     }
 
-    // ============================================
-    // MÉTHODES DE SUPPRESSION
-    // ============================================
-
-    /**
-     * Supprimer une pièce jointe (fichier + BDD)
-     */
     public function supprimer(int $id): bool
     {
         $pieceJointe = $this->find($id);
@@ -177,27 +129,21 @@ class PieceJointe extends Model
             return false;
         }
 
-        // Supprimer le fichier physique
         if (file_exists($pieceJointe['chemin'])) {
             unlink($pieceJointe['chemin']);
         }
 
-        // Supprimer de la BDD
         return $this->delete($id);
     }
 
-    /**
-     * Supprimer toutes les pièces jointes d'une demande
-     */
     public function supprimerByDemande(int $demandeId): bool
     {
         $piecesJointes = $this->findByDemande($demandeId);
-        
+
         foreach ($piecesJointes as $pj) {
             $this->supprimer($pj['id']);
         }
 
-        // Supprimer le dossier si vide
         $dossier = UPLOAD_PATH . $demandeId . '/';
         if (is_dir($dossier) && count(scandir($dossier)) === 2) {
             rmdir($dossier);
@@ -206,13 +152,6 @@ class PieceJointe extends Model
         return true;
     }
 
-    // ============================================
-    // MÉTHODES UTILITAIRES
-    // ============================================
-
-    /**
-     * Obtenir le message d'erreur d'upload
-     */
     private function getUploadErrorMessage(int $errorCode): string
     {
         $messages = [
@@ -228,25 +167,19 @@ class PieceJointe extends Model
         return $messages[$errorCode] ?? 'Erreur inconnue lors de l\'upload.';
     }
 
-    /**
-     * Formater la taille du fichier
-     */
     public static function formatTaille(int $bytes): string
     {
         $units = ['o', 'Ko', 'Mo', 'Go'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 
-    /**
-     * Obtenir l'icône selon le type de fichier
-     */
     public static function getIcone(string $mimeType): string
     {
         if (str_starts_with($mimeType, 'image/')) {
@@ -260,9 +193,6 @@ class PieceJointe extends Model
         }
     }
 
-    /**
-     * Vérifier si le fichier est une image
-     */
     public static function estImage(string $mimeType): bool
     {
         return str_starts_with($mimeType, 'image/');

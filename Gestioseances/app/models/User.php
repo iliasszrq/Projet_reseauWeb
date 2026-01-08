@@ -1,8 +1,4 @@
 <?php
-/**
- * Modèle User
- * Fusion Dev 1 (adapté pour nouvelle structure)
- */
 
 class User extends Model
 {

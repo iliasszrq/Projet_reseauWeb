@@ -1,7 +1,5 @@
 <?php
-/**
- * Détail d'une demande
- */
+
 $pageTitle = 'Demande #' . ($demande['id'] ?? '');
 $userRole = Session::get('user_role');
 $userId = Session::get('user_id');

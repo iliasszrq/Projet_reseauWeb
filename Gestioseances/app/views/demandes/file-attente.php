@@ -1,7 +1,5 @@
 <?php
-/**
- * File d'attente des demandes (Assistante)
- */
+
 $pageTitle = 'File d\'attente';
 ?>
 <?php ob_start(); ?>

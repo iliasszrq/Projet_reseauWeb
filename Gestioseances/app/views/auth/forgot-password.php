@@ -1,7 +1,5 @@
 <?php
-/**
- * Page mot de passe oublié
- */
+
 $pageTitle = 'Mot de passe oublié';
 ?>
 <!DOCTYPE html>
@@ -36,13 +34,13 @@ $pageTitle = 'Mot de passe oublié';
                 <h4 class="mt-2">Mot de passe oublié</h4>
                 <p class="text-muted">Entrez votre email pour recevoir un lien de réinitialisation</p>
             </div>
-            
+
             <?php if (!empty($flash['success'])): ?>
             <div class="alert alert-success">
                 <?= Security::e($flash['success']) ?>
             </div>
             <?php endif; ?>
-            
+
             <?php if (!empty($flash['danger'])): ?>
             <div class="alert alert-danger">
                 <?= Security::e($flash['danger']) ?>
@@ -51,19 +49,19 @@ $pageTitle = 'Mot de passe oublié';
 
             <form method="POST" action="<?= APP_URL ?>/forgot-password">
                 <?php Security::csrfField(); ?>
-                
+
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="email" name="email" 
                            placeholder="email@example.com" required>
                     <label for="email">Adresse email</label>
                 </div>
-                
+
                 <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-send"></i> Envoyer le lien
                     </button>
                 </div>
-                
+
                 <div class="text-center">
                     <a href="<?= APP_URL ?>/login" class="text-decoration-none">
                         <i class="bi bi-arrow-left"></i> Retour à la connexion

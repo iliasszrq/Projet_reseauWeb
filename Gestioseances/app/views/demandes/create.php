@@ -1,7 +1,5 @@
 <?php
-/**
- * Formulaire de création d'une demande
- */
+
 $pageTitle = 'Nouvelle demande';
 ?>
 <?php ob_start(); ?>
@@ -30,7 +28,7 @@ $pageTitle = 'Nouvelle demande';
 
                     <form method="POST" action="<?= APP_URL ?>/demandes/store" enctype="multipart/form-data">
                         <?php Security::csrfField(); ?>
-                        
+
                         <!-- Type de demande -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Type de demande *</label>
@@ -88,7 +86,7 @@ $pageTitle = 'Nouvelle demande';
                         <div id="changement_options">
                             <hr>
                             <h6 class="text-primary mb-3"><i class="bi bi-gear"></i> Options de changement</h6>
-                            
+
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label for="nouvelle_date" class="form-label">Nouvelle date</label>
@@ -172,9 +170,9 @@ $pageTitle = 'Nouvelle demande';
                         <li>L'assistante vérifie la faisabilité</li>
                         <li>Le directeur approuve ou rejette</li>
                     </ol>
-                    
+
                     <hr>
-                    
+
                     <h6>Conseils</h6>
                     <ul class="small">
                         <li>Soyez précis dans votre motif</li>
@@ -188,7 +186,6 @@ $pageTitle = 'Nouvelle demande';
 </div>
 
 <script>
-// Afficher/masquer les options de changement
 document.querySelectorAll('input[name="type"]').forEach(radio => {
     radio.addEventListener('change', function() {
         document.getElementById('changement_options').style.display = 

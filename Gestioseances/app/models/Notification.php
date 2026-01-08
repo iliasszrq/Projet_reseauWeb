@@ -1,24 +1,9 @@
 <?php
-/**
- * Modèle Notification
- * Gère les notifications in-app pour les utilisateurs
- * 
- * Place ce fichier dans : app/models/Notification.php
- * 
- * @author Dev 2
- */
 
 class Notification extends Model
 {
     protected $table = 'notifications';
 
-    // ============================================
-    // MÉTHODES DE RÉCUPÉRATION
-    // ============================================
-
-    /**
-     * Récupérer toutes les notifications d'un utilisateur
-     */
     public function findByUser(int $userId, int $limit = 50): array
     {
         $sql = "SELECT n.*, d.type AS demande_type
@@ -27,18 +12,15 @@ class Notification extends Model
                 WHERE n.user_id = :user_id
                 ORDER BY n.created_at DESC
                 LIMIT :limit";
-        
+
         $stmt = $this->db->getConnection()->prepare($sql);
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll();
     }
 
-    /**
-     * Récupérer les notifications non lues d'un utilisateur
-     */
     public function findNonLues(int $userId): array
     {
         $sql = "SELECT n.*, d.type AS demande_type
@@ -46,13 +28,10 @@ class Notification extends Model
                 LEFT JOIN demandes d ON n.demande_id = d.id
                 WHERE n.user_id = :user_id AND n.lue = 0
                 ORDER BY n.created_at DESC";
-        
+
         return $this->db->fetchAll($sql, ['user_id' => $userId]);
     }
 
-    /**
-     * Compter les notifications non lues
-     */
     public function countNonLues(int $userId): int
     {
         $sql = "SELECT COUNT(*) FROM notifications 
@@ -60,13 +39,6 @@ class Notification extends Model
         return $this->db->count($sql, ['user_id' => $userId]);
     }
 
-    // ============================================
-    // MÉTHODES DE CRÉATION
-    // ============================================
-
-    /**
-     * Créer une notification
-     */
     public function creer(int $userId, string $titre, string $message, string $type = 'info', ?int $demandeId = null): int
     {
         return $this->create([
@@ -79,9 +51,6 @@ class Notification extends Model
         ]);
     }
 
-    /**
-     * Notifier la soumission d'une demande (vers assistante)
-     */
     public function notifierSoumission(int $assistanteId, int $demandeId, string $professeurNom): int
     {
         return $this->creer(
@@ -93,9 +62,6 @@ class Notification extends Model
         );
     }
 
-    /**
-     * Notifier la validation par l'assistante (vers directeur)
-     */
     public function notifierValidation(int $directeurId, int $demandeId, string $professeurNom): int
     {
         return $this->creer(
@@ -107,9 +73,6 @@ class Notification extends Model
         );
     }
 
-    /**
-     * Notifier le rejet par l'assistante (vers professeur)
-     */
     public function notifierRejetAssistante(int $professeurId, int $demandeId): int
     {
         return $this->creer(
@@ -121,9 +84,6 @@ class Notification extends Model
         );
     }
 
-    /**
-     * Notifier l'approbation par le directeur (vers professeur)
-     */
     public function notifierApprobation(int $professeurId, int $demandeId): int
     {
         return $this->creer(
@@ -135,9 +95,6 @@ class Notification extends Model
         );
     }
 
-    /**
-     * Notifier le rejet par le directeur (vers professeur)
-     */
     public function notifierRejetDirecteur(int $professeurId, int $demandeId): int
     {
         return $this->creer(
@@ -149,13 +106,6 @@ class Notification extends Model
         );
     }
 
-    // ============================================
-    // MÉTHODES DE MISE À JOUR
-    // ============================================
-
-    /**
-     * Marquer une notification comme lue
-     */
     public function marquerCommeLue(int $id): bool
     {
         return $this->update($id, [
@@ -164,44 +114,27 @@ class Notification extends Model
         ]);
     }
 
-    /**
-     * Marquer toutes les notifications d'un utilisateur comme lues
-     */
     public function marquerToutesCommeLues(int $userId): bool
     {
         $sql = "UPDATE notifications 
                 SET lue = 1, date_lecture = :date_lecture 
                 WHERE user_id = :user_id AND lue = 0";
-        
+
         return $this->db->execute($sql, [
             'user_id' => $userId,
             'date_lecture' => date('Y-m-d H:i:s')
         ]);
     }
 
-    // ============================================
-    // MÉTHODES DE SUPPRESSION
-    // ============================================
-
-    /**
-     * Supprimer les anciennes notifications lues (plus de 30 jours)
-     */
     public function supprimerAnciennes(int $jours = 30): bool
     {
         $sql = "DELETE FROM notifications 
                 WHERE lue = 1 
                 AND date_lecture < DATE_SUB(NOW(), INTERVAL :jours DAY)";
-        
+
         return $this->db->execute($sql, ['jours' => $jours]);
     }
 
-    // ============================================
-    // MÉTHODES UTILITAIRES
-    // ============================================
-
-    /**
-     * Obtenir l'icône selon le type de notification
-     */
     public static function getIcone(string $type): string
     {
         $icones = [
@@ -213,9 +146,6 @@ class Notification extends Model
         return $icones[$type] ?? 'bi-bell';
     }
 
-    /**
-     * Obtenir la classe CSS selon le type
-     */
     public static function getTypeClass(string $type): string
     {
         $classes = [
@@ -227,9 +157,6 @@ class Notification extends Model
         return $classes[$type] ?? 'text-secondary';
     }
 
-    /**
-     * Formater la date relative (il y a X minutes/heures/jours)
-     */
     public static function formatDateRelative(string $date): string
     {
         $timestamp = strtotime($date);

@@ -1,7 +1,5 @@
 <?php
-/**
- * Liste des notifications
- */
+
 $pageTitle = 'Mes notifications';
 ?>
 <?php ob_start(); ?>

@@ -1,8 +1,4 @@
 <?php
-/**
- * Classe Session - Gestion des sessions
- * Par Dev 1
- */
 
 class Session
 {

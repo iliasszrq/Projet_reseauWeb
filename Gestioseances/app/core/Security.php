@@ -1,12 +1,7 @@
 <?php
-/**
- * Classe Security - Sécurité CSRF, XSS, mots de passe
- * Par Dev 1
- */
 
 class Security
 {
-    // --- CSRF ---
     public static function generateCsrfToken(): string
     {
         $token = bin2hex(random_bytes(32));
@@ -30,19 +25,16 @@ class Security
         return Session::get('csrf_token') ?? self::generateCsrfToken();
     }
 
-    // --- XSS ---
     public static function escape(?string $string): string
     {
         return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
     }
 
-    // Alias court
     public static function e(?string $string): string
     {
         return self::escape($string);
     }
 
-    // --- Password bcrypt ---
     public static function hashPassword(string $password): string
     {
         return password_hash($password, PASSWORD_BCRYPT);
@@ -53,13 +45,11 @@ class Security
         return password_verify($password, $hash);
     }
 
-    // --- Tokens reset ---
     public static function generateToken(): string
     {
         return bin2hex(random_bytes(50));
     }
 
-    // --- Brute force ---
     public static function isAccountLocked(int $attempts, ?string $lockTime): bool
     {
         if ($attempts < MAX_LOGIN_ATTEMPTS) {
@@ -73,7 +63,6 @@ class Security
         return (time() - strtotime($lockTime)) < LOCKOUT_TIME;
     }
 
-    // --- Validation des entrées ---
     public static function sanitizeString(?string $string): string
     {
         return trim(strip_tags($string ?? ''));

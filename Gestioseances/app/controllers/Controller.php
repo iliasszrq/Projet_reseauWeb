@@ -1,8 +1,4 @@
 <?php
-/**
- * Classe Controller - Classe de base pour tous les contrôleurs
- * Fusion Dev 1 + Dev 2 - CORRIGÉ
- */
 
 class Controller
 {
@@ -13,15 +9,12 @@ class Controller
         $this->db = Database::getInstance();
     }
 
-    /**
-     * Charger une vue
-     */
     protected function view(string $viewName, array $data = []): void
     {
         extract($data);
-        
+
         $viewPath = APP_ROOT . '/app/views/' . $viewName . '.php';
-        
+
         if (file_exists($viewPath)) {
             require $viewPath;
         } else {
@@ -29,18 +22,12 @@ class Controller
         }
     }
 
-    /**
-     * Rediriger vers une URL
-     */
     protected function redirect(string $url): void
     {
         header("Location: " . APP_URL . $url);
         exit;
     }
 
-    /**
-     * Retourner une réponse JSON
-     */
     protected function json(array $data, int $statusCode = 200): void
     {
         http_response_code($statusCode);
@@ -70,37 +57,24 @@ class Controller
         return $_GET[$key] ?? $default;
     }
 
-    /**
-     * Messages flash - Définir
-     */
     protected function setFlash(string $type, string $message): void
     {
         Session::setFlash($type, $message);
     }
 
-    /**
-     * Messages flash - Récupérer un type spécifique OU tous les flash
-     */
     protected function getFlash(?string $type = null)
     {
         if ($type === null) {
-            // Retourner tous les flash messages
             return Session::getAllFlash();
         }
         return Session::getFlash($type);
     }
 
-    /**
-     * Récupérer tous les flash messages
-     */
     protected function getAllFlash(): array
     {
         return Session::getAllFlash();
     }
 
-    /**
-     * Vérifications d'authentification
-     */
     protected function isLoggedIn(): bool
     {
         return Session::isLoggedIn();
@@ -132,16 +106,13 @@ class Controller
     protected function requireRole(string $role): void
     {
         $this->requireLogin();
-        
+
         if (!$this->hasRole($role)) {
             $this->setFlash('danger', 'Vous n\'avez pas les droits pour accéder à cette page.');
             $this->redirect('/');
         }
     }
 
-    /**
-     * Vérification CSRF
-     */
     protected function verifyCsrf(): bool
     {
         $token = $this->post('csrf_token');
