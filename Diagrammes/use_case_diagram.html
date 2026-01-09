@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme de Cas d'Utilisation - GestioSeances</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .diagram-container {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .actor {
+            fill: #4299e1;
+            stroke: #2c5282;
+            stroke-width: 2;
+        }
+
+        .actor-text {
+            fill: #2d3748;
+            font-size: 14px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
+
+        .system-boundary {
+            fill: none;
+            stroke: #2d3748;
+            stroke-width: 2;
+            stroke-dasharray: 5,5;
+        }
+
+        .system-title {
+            fill: #2d3748;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .use-case {
+            fill: #fff;
+            stroke: #4299e1;
+            stroke-width: 2;
+        }
+
+        .use-case:hover {
+            fill: #ebf8ff;
+            cursor: pointer;
+        }
+
+        .use-case-text {
+            fill: #2d3748;
+            font-size: 13px;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .association {
+            stroke: #4a5568;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .include-extend {
+            stroke: #48bb78;
+            stroke-width: 2;
+            stroke-dasharray: 5,5;
+            fill: none;
+        }
+
+        .arrow {
+            fill: #4a5568;
+        }
+
+        .label {
+            fill: #48bb78;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .legend h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-icon {
+            width: 40px;
+            height: 25px;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+
+        .legend-text {
+            color: #4a5568;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Diagramme de Cas d'Utilisation</h1>
+        <p class="subtitle">Système de Gestion des Demandes de Changement/Annulation de Séances</p>
+        
+        <div class="diagram-container">
+            <svg width="1300" height="900" viewBox="0 0 1300 900">
+                <!-- Frontière du système -->
+                <rect class="system-boundary" x="200" y="80" width="900" height="750" rx="10"/>
+                <text class="system-title" x="650" y="110" text-anchor="middle">GestioSeances</text>
+                
+                <!-- Acteurs -->
+                <!-- Professeur -->
+                <ellipse class="actor" cx="80" cy="200" rx="35" ry="50"/>
+                <circle class="actor" cx="80" cy="160" r="20"/>
+                <line class="actor" x1="80" y1="180" x2="80" y2="210" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="190" x2="50" y2="230" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="190" x2="110" y2="230" stroke="#2c5282" stroke-width="3"/>
+                <text class="actor-text" x="80" y="270">Professeur</text>
+                
+                <!-- Assistante -->
+                <ellipse class="actor" cx="80" cy="450" rx="35" ry="50"/>
+                <circle class="actor" cx="80" cy="410" r="20"/>
+                <line class="actor" x1="80" y1="430" x2="80" y2="460" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="440" x2="50" y2="480" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="440" x2="110" y2="480" stroke="#2c5282" stroke-width="3"/>
+                <text class="actor-text" x="80" y="520">Assistante</text>
+                
+                <!-- Directeur -->
+                <ellipse class="actor" cx="80" cy="700" rx="35" ry="50"/>
+                <circle class="actor" cx="80" cy="660" r="20"/>
+                <line class="actor" x1="80" y1="680" x2="80" y2="710" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="690" x2="50" y2="730" stroke="#2c5282" stroke-width="3"/>
+                <line class="actor" x1="80" y1="690" x2="110" y2="730" stroke="#2c5282" stroke-width="3"/>
+                <text class="actor-text" x="80" y="770">Directeur</text>
+                
+                <!-- Système Email -->
+                <rect class="actor" x="1180" y="420" width="80" height="60" rx="5" fill="#f6ad55" stroke="#c05621" stroke-width="2"/>
+                <text class="actor-text" x="1220" y="455" fill="#2d3748">Système</text>
+                <text class="actor-text" x="1220" y="470" fill="#2d3748">Email</text>
+                
+                <!-- Cas d'utilisation - Professeur -->
+                <ellipse class="use-case" cx="350" cy="150" rx="110" ry="40"/>
+                <text class="use-case-text" x="350" y="155">S'authentifier</text>
+                
+                <ellipse class="use-case" cx="350" cy="230" rx="110" ry="40"/>
+                <text class="use-case-text" x="350" y="235">Créer demande</text>
+                
+                <ellipse class="use-case" cx="550" cy="230" rx="110" ry="40"/>
+                <text class="use-case-text" x="550" y="235">Uploader pièces</text>
+                
+                <ellipse class="use-case" cx="350" cy="310" rx="110" ry="40"/>
+                <text class="use-case-text" x="350" y="315">Suivre demandes</text>
+                
+                <ellipse class="use-case" cx="350" cy="390" rx="110" ry="40"/>
+                <text class="use-case-text" x="350" y="395">Gérer profil</text>
+                
+                <!-- Cas d'utilisation - Assistante -->
+                <ellipse class="use-case" cx="550" cy="420" rx="120" ry="40"/>
+                <text class="use-case-text" x="550" y="425">Valider demande</text>
+                
+                <ellipse class="use-case" cx="780" cy="380" rx="120" ry="40"/>
+                <text class="use-case-text" x="780" y="385">Vérifier conflits</text>
+                
+                <ellipse class="use-case" cx="550" cy="500" rx="110" ry="40"/>
+                <text class="use-case-text" x="550" y="505">Rejeter demande</text>
+                
+                <ellipse class="use-case" cx="780" cy="460" rx="110" ry="40"/>
+                <text class="use-case-text" x="780" y="465">Consulter planning</text>
+                
+                <ellipse class="use-case" cx="550" cy="580" rx="120" ry="40"/>
+                <text class="use-case-text" x="550" y="585">Voir statistiques</text>
+                
+                <!-- Cas d'utilisation - Directeur -->
+                <ellipse class="use-case" cx="550" cy="680" rx="120" ry="40"/>
+                <text class="use-case-text" x="550" y="685">Approuver demande</text>
+                
+                <ellipse class="use-case" cx="780" cy="640" rx="110" ry="40"/>
+                <text class="use-case-text" x="780" y="645">Gérer utilisateurs</text>
+                
+                <ellipse class="use-case" cx="780" cy="720" rx="110" ry="40"/>
+                <text class="use-case-text" x="780" y="725">Paramétrer système</text>
+                
+                <ellipse class="use-case" cx="550" cy="760" rx="120" ry="40"/>
+                <text class="use-case-text" x="550" y="765">Générer rapports</text>
+                
+                <!-- Cas d'utilisation partagé -->
+                <ellipse class="use-case" cx="950" cy="450" rx="120" ry="40"/>
+                <text class="use-case-text" x="950" y="445">Recevoir</text>
+                <text class="use-case-text" x="950" y="460">notifications</text>
+                
+                <!-- Associations Professeur -->
+                <line class="association" x1="115" y1="200" x2="240" y2="150"/>
+                <line class="association" x1="115" y1="210" x2="240" y2="230"/>
+                <line class="association" x1="115" y1="220" x2="240" y2="310"/>
+                <line class="association" x1="115" y1="230" x2="240" y2="390"/>
+                
+                <!-- Associations Assistante -->
+                <line class="association" x1="115" y1="450" x2="430" y2="420"/>
+                <line class="association" x1="115" y1="460" x2="440" y2="500"/>
+                <line class="association" x1="115" y1="455" x2="670" y2="460"/>
+                <line class="association" x1="115" y1="465" x2="440" y2="580"/>
+                
+                <!-- Associations Directeur -->
+                <line class="association" x1="115" y1="700" x2="430" y2="680"/>
+                <line class="association" x1="115" y1="690" x2="670" y2="640"/>
+                <line class="association" x1="115" y1="710" x2="670" y2="720"/>
+                <line class="association" x1="115" y1="720" x2="430" y2="760"/>
+                
+                <!-- Relations include -->
+                <line class="include-extend" x1="460" y1="230" x2="490" y2="230"/>
+                <polygon class="arrow" points="490,230 480,225 480,235" fill="#48bb78"/>
+                <text class="label" x="475" y="220">«include»</text>
+                
+                <line class="include-extend" x1="665" y1="420" x2="720" y2="390"/>
+                <polygon class="arrow" points="720,390 710,387 713,397" fill="#48bb78"/>
+                <text class="label" x="680" y="400">«include»</text>
+                
+                <!-- Associations notifications -->
+                <line class="association" x1="460" y1="310" x2="840" y2="440"/>
+                <line class="association" x1="665" y1="420" x2="840" y2="445"/>
+                <line class="association" x1="665" y1="500" x2="840" y2="455"/>
+                <line class="association" x1="665" y1="680" x2="840" y2="455"/>
+                
+                <!-- Association système email -->
+                <line class="include-extend" x1="1070" y1="450" x2="1130" y2="450"/>
+                <polygon class="arrow" points="1130,450 1120,445 1120,455" fill="#48bb78"/>
+                <text class="label" x="1085" y="440">«include»</text>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <h3>📋 Légende</h3>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #4299e1; border: 2px solid #2c5282; border-radius: 50%;"></div>
+                <span class="legend-text"><strong>Acteur</strong> - Utilisateur ou système externe interagissant avec le système</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: white; border: 2px solid #4299e1; border-radius: 50%;"></div>
+                <span class="legend-text"><strong>Cas d'utilisation</strong> - Fonctionnalité du système</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: linear-gradient(to right, #4a5568 50%, transparent 50%); background-size: 10px 2px; height: 2px;"></div>
+                <span class="legend-text"><strong>Association</strong> - Lien entre acteur et cas d'utilisation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: repeating-linear-gradient(to right, #48bb78 0px, #48bb78 5px, transparent 5px, transparent 10px); height: 2px;"></div>
+                <span class="legend-text"><strong>Include</strong> - Relation d'inclusion entre cas d'utilisation</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
