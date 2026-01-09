@@ -33,21 +33,15 @@ class StatsController extends Controller
 
         $demandes = $this->getAllDemandes();
 
-        // Export CSV avec BOM UTF-8 pour Excel
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="demandes_' . date('Y-m-d') . '.csv"');
         header('Cache-Control: max-age=0');
 
-        // Ouvrir la sortie
         $output = fopen('php://output', 'w');
-        
-        // BOM UTF-8 pour que Excel reconnaisse les accents
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        // En-têtes
         fputcsv($output, ['ID', 'Professeur', 'Type', 'Matiere', 'Motif', 'Statut', 'Urgente', 'Date creation'], ';');
 
-        // Données
         foreach ($demandes as $d) {
             fputcsv($output, [
                 $d['id'],
@@ -163,13 +157,19 @@ class StatsController extends Controller
     private function getMonthlyStats(): array
     {
         $db = Database::getInstance()->getConnection();
-        $sql = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as total,
-                SUM(CASE WHEN statut = 'approuvee' THEN 1 ELSE 0 END) as approuvees,
-                SUM(CASE WHEN statut = 'rejetee' THEN 1 ELSE 0 END) as rejetees
-                FROM demandes WHERE created_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-                GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY month ASC";
+        // Récupérer les 6 derniers mois de données (sans filtre de date)
+        $sql = "SELECT DATE_FORMAT(created_at, '%Y-%m') as month, 
+                       COUNT(*) as total,
+                       SUM(CASE WHEN statut = 'approuvee' THEN 1 ELSE 0 END) as approuvees,
+                       SUM(CASE WHEN statut = 'rejetee' THEN 1 ELSE 0 END) as rejetees
+                FROM demandes 
+                GROUP BY DATE_FORMAT(created_at, '%Y-%m') 
+                ORDER BY month DESC 
+                LIMIT 6";
         $stmt = $db->query($sql);
-        return $stmt->fetchAll();
+        $results = $stmt->fetchAll();
+        // Inverser pour avoir l'ordre chronologique (ancien -> récent)
+        return array_reverse($results);
     }
 
     private function getStatsByProfesseur(): array
