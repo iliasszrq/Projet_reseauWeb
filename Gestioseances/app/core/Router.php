@@ -17,7 +17,9 @@ class Router
     public function resolve(): void
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $uri = str_replace('/GestioSeances/public', '', $uri);
+        
+        $basePath = dirname($_SERVER['SCRIPT_NAME']);
+        $uri = str_replace($basePath, '', $uri);
         $uri = rtrim($uri, '/') ?: '/';
 
         $httpMethod = $_SERVER['REQUEST_METHOD'];

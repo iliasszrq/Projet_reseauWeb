@@ -7,9 +7,9 @@ COLLATE utf8mb4_unicode_ci;
 
 USE gestioseances;
 
-
+-- ============================================
 -- TABLE: users
-
+-- ============================================
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,

@@ -53,6 +53,20 @@ $router->post('/notifications/toutes-lues', 'NotificationController', 'marquerTo
 $router->get('/notifications/count', 'NotificationController', 'count');
 $router->get('/notifications/recent', 'NotificationController', 'recent');
 
+$router->get('/admin/users', 'AdminController', 'users');
+$router->get('/admin/users/create', 'AdminController', 'createUser');
+$router->post('/admin/users/create', 'AdminController', 'createUser');
+$router->get('/admin/users/edit/{id}', 'AdminController', 'editUser');
+$router->post('/admin/users/edit/{id}', 'AdminController', 'editUser');
+$router->post('/admin/users/delete/{id}', 'AdminController', 'deleteUser');
+
+$router->get('/admin/settings', 'AdminController', 'settings');
+$router->post('/admin/settings', 'AdminController', 'settings');
+
+$router->get('/stats', 'StatsController', 'index');
+$router->get('/stats/export/excel', 'StatsController', 'exportExcel');
+$router->get('/stats/export/pdf', 'StatsController', 'exportPdf');
+
 $router->get('/', 'AuthController', 'showLogin');
 
 $router->resolve();
