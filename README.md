@@ -1,6 +1,6 @@
 # 🎓 GestioSeances - Gestion des Demandes de Changement/Annulation de Séances
 
-> Application web de workflow pour la gestion des modifications d'emploi du temps universitaire
+> Application web de workflow pour la gestion des modifications d'emploi du temps universitaire + Infrastructure DNS & Serveur Web
 
 ---
 
@@ -10,8 +10,10 @@
 - [Problématique](#-problématique)
 - [Fonctionnalités Principales](#-fonctionnalités-principales)
 - [Architecture Technique](#-architecture-technique)
+- [Infrastructure DNS & Web](#-infrastructure-dns--web)
 - [Structure du Projet](#-structure-du-projet)
 - [Installation](#-installation)
+- [Déploiement sur Serveur](#-déploiement-sur-serveur)
 - [Configuration](#-configuration)
 - [Équipe de Développement](#-équipe-de-développement)
 - [Workflow de Validation](#-workflow-de-validation)
@@ -28,6 +30,8 @@ L'application implémente un workflow hiérarchique impliquant trois acteurs :
 - 👨‍🏫 **Professeur** : Initiateur des demandes
 - 👩‍💼 **Assistante Administrative** : Première validation (faisabilité technique)
 - 👔 **Directeur** : Approbation finale
+
+Le projet inclut également le déploiement d'une **infrastructure complète** avec serveur DNS (BIND9) et serveur web sécurisé (Apache2 + SSL).
 
 ---
 
@@ -78,10 +82,12 @@ La gestion actuelle des modifications d'emploi du temps par email ou papier enge
 | Couche | Technologies |
 |--------|-------------|
 | **Frontend** | HTML5, CSS3, JavaScript, Bootstrap 5 |
-| **Backend** | PHP 8+ (Architecture MVC) |
-| **Base de données** | MySQL 8.0 |
-| **Sécurité** | Sessions PHP, bcrypt, tokens CSRF |
-| **Emails** | PHPMailer |
+| **Backend** | PHP 8.x (Architecture MVC) |
+| **Base de données** | MySQL 8.x |
+| **Serveur Web** | Apache2 + mod_ssl + mod_rewrite |
+| **Serveur DNS** | BIND9 |
+| **Sécurité** | SSL/TLS, bcrypt, tokens CSRF, PDO |
+| **Virtualisation** | VirtualBox (Ubuntu 25.10) |
 
 ### Architecture MVC
 
@@ -116,6 +122,52 @@ La gestion actuelle des modifications d'emploi du temps par email ou papier enge
 
 ---
 
+## 🌐 Infrastructure DNS & Web
+
+### Architecture Réseau
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Réseau 192.168.0.0/24                      │
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │           Serveur Ubuntu 25.10                      │   │
+│   │              192.168.0.116                          │   │
+│   │                                                     │   │
+│   │   ┌─────────┐  ┌─────────┐  ┌─────────┐            │   │
+│   │   │  BIND9  │  │ Apache2 │  │  MySQL  │            │   │
+│   │   │  (DNS)  │  │  (Web)  │  │  (BDD)  │            │   │
+│   │   └─────────┘  └─────────┘  └─────────┘            │   │
+│   │                                                     │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                           ▲                                  │
+│              DNS + HTTPS  │                                  │
+│                           │                                  │
+│   ┌───────────┐      ┌───────────┐                          │
+│   │ VM Client │      │ Mac (Hôte)│                          │
+│   └───────────┘      └───────────┘                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Configuration DNS (BIND9)
+
+| Domaine | Type | Valeur |
+|---------|------|--------|
+| gestio.local | A | 192.168.0.116 |
+| www.gestio.local | A | 192.168.0.116 |
+| ns1.gestio.local | A | 192.168.0.116 |
+| db.gestio.local | A | 192.168.0.116 |
+
+### Configuration Web (Apache2)
+
+- **VirtualHost HTTP** : Redirection vers HTTPS
+- **VirtualHost HTTPS** : Port 443 avec SSL/TLS
+- **Certificat** : Auto-signé (365 jours)
+- **DocumentRoot** : `/var/www/gestio.local/public`
+
+---
+
 ## 📁 Structure du Projet
 
 ```
@@ -125,92 +177,55 @@ GestioSeances/
 │   ├── 📁 controllers/          # Contrôleurs MVC
 │   │   ├── AuthController.php
 │   │   ├── DemandeController.php
-│   │   ├── PlanningController.php
-│   │   ├── NotificationController.php
 │   │   ├── AdminController.php
-│   │   └── StatistiqueController.php
+│   │   ├── NotificationController.php
+│   │   └── StatsController.php
 │   │
 │   ├── 📁 models/               # Modèles (accès BDD)
 │   │   ├── User.php
 │   │   ├── Demande.php
-│   │   ├── Seance.php
-│   │   ├── Salle.php
-│   │   ├── Matiere.php
 │   │   ├── Notification.php
 │   │   ├── Validation.php
 │   │   └── PieceJointe.php
 │   │
 │   ├── 📁 views/                # Vues (templates)
 │   │   ├── 📁 layouts/
-│   │   │   ├── main.php
-│   │   │   └── auth.php
+│   │   │   └── main.php
 │   │   ├── 📁 auth/
 │   │   │   ├── login.php
 │   │   │   ├── forgot-password.php
 │   │   │   └── reset-password.php
-│   │   ├── 📁 professeur/
-│   │   │   ├── dashboard.php
-│   │   │   ├── demandes/
-│   │   │   └── profil.php
-│   │   ├── 📁 assistante/
-│   │   │   ├── dashboard.php
-│   │   │   ├── file-attente.php
-│   │   │   └── planning.php
-│   │   ├── 📁 directeur/
-│   │   │   ├── dashboard.php
-│   │   │   ├── utilisateurs/
-│   │   │   └── parametres.php
-│   │   └── 📁 partials/
-│   │       ├── header.php
-│   │       ├── sidebar.php
-│   │       ├── footer.php
-│   │       └── notifications.php
+│   │   ├── 📁 demandes/
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   ├── show.php
+│   │   │   └── edit.php
+│   │   ├── 📁 admin/
+│   │   │   ├── users.php
+│   │   │   └── settings.php
+│   │   └── 📁 stats/
+│   │       └── index.php
 │   │
 │   └── 📁 core/                 # Classes utilitaires
 │       ├── Database.php
 │       ├── Router.php
 │       ├── Session.php
-│       ├── Validator.php
-│       ├── Mailer.php
 │       └── Security.php
 │
 ├── 📁 public/                   # Fichiers accessibles publiquement
 │   ├── index.php               # Point d'entrée unique
+│   ├── .htaccess               # Règles de réécriture
 │   ├── 📁 css/
-│   │   ├── style.css
-│   │   └── dashboard.css
-│   ├── 📁 js/
-│   │   ├── app.js
-│   │   ├── calendar.js
-│   │   └── notifications.js
-│   └── 📁 images/
-│       └── logo.png
+│   └── 📁 js/
 │
-├── 📁 storage/                  # Fichiers uploadés (hors webroot)
+├── 📁 storage/                  # Fichiers uploadés
 │   ├── 📁 uploads/
 │   └── 📁 logs/
 │
 ├── 📁 database/
-│   ├── schema.sql              # Structure de la BDD
-│   ├── seed.sql                # Données de test
-│   └── migrations/
+│   └── schema_final.sql        # Structure de la BDD
 │
-├── 📁 docs/                     # Documentation
-│   ├── 📁 uml/
-│   │   ├── use-case.png
-│   │   ├── class-diagram.png
-│   │   └── sequence-diagrams/
-│   ├── 📁 maquettes/
-│   ├── guide-utilisateur.pdf
-│   └── documentation-technique.pdf
-│
-├── 📁 tests/                    # Tests
-│   ├── scenarios-fonctionnels.md
-│   └── rapport-securite.md
-│
-├── .htaccess
-├── config.php
-├── composer.json
+├── config.php                  # Configuration
 └── README.md
 ```
 
@@ -222,32 +237,149 @@ GestioSeances/
 
 - PHP 8.0 ou supérieur
 - MySQL 8.0 ou supérieur
-- Serveur Apache avec mod_rewrite
-- Composer (gestionnaire de dépendances PHP)
+- Serveur Apache avec mod_rewrite et mod_ssl
+- Ubuntu 25.10 (ou distribution similaire)
 
-### Étapes d'Installation
+### Installation Locale (XAMPP/WAMP)
 
 ```bash
-# 1. Cloner le repository
+# 1. Cloner le projet dans htdocs
 git clone https://github.com/votre-equipe/gestio-seances.git
 cd gestio-seances
 
-# 2. Installer les dépendances
-composer install
+# 2. Créer la base de données
+mysql -u root -p < database/schema_final.sql
 
-# 3. Créer la base de données
-mysql -u root -p < database/schema.sql
-
-# 4. Insérer les données de test
-mysql -u root -p gestio_seances < database/seed.sql
-
-# 5. Configurer l'application
+# 3. Configurer l'application
 cp config.example.php config.php
 # Éditer config.php avec vos paramètres
 
-# 6. Configurer les permissions
+# 4. Configurer les permissions
 chmod 755 storage/uploads
 chmod 755 storage/logs
+```
+
+---
+
+## 🚀 Déploiement sur Serveur
+
+### 1. Installation des paquets
+
+```bash
+# Mise à jour du système
+sudo apt update && sudo apt upgrade -y
+
+# Installation LAMP
+sudo apt install -y apache2 php php-mysql mysql-server
+
+# Installation BIND9
+sudo apt install -y bind9 bind9utils dnsutils
+
+# Activation des modules Apache
+sudo a2enmod rewrite ssl headers
+```
+
+### 2. Configuration DNS (BIND9)
+
+**Fichier `/etc/bind/named.conf.options` :**
+```
+options {
+    directory "/var/cache/bind";
+    listen-on { 127.0.0.1; 192.168.0.116; };
+    allow-query { localhost; 192.168.0.0/24; };
+    forwarders { 8.8.8.8; 8.8.4.4; };
+    forward only;
+};
+```
+
+**Fichier `/etc/bind/zones/db.gestio.local` :**
+```
+$TTL 86400
+@ IN SOA ns1.gestio.local. admin.gestio.local. (
+        2025011401 3600 1800 604800 86400 )
+@ IN NS  ns1.gestio.local.
+ns1 IN A 192.168.0.116
+www IN A 192.168.0.116
+```
+
+### 3. Configuration SSL
+
+```bash
+# Création du certificat auto-signé
+sudo mkdir -p /etc/apache2/ssl
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/apache2/ssl/gestio.local.key \
+    -out /etc/apache2/ssl/gestio.local.crt \
+    -subj "/C=MA/ST=Fes/O=EIDIA/CN=www.gestio.local"
+```
+
+### 4. VirtualHost Apache
+
+**Fichier `/etc/apache2/sites-available/gestio.local-ssl.conf` :**
+```apache
+<VirtualHost *:443>
+    ServerName www.gestio.local
+    ServerAlias gestio.local
+    DocumentRoot /var/www/gestio.local/public
+
+    SSLEngine on
+    SSLCertificateFile /etc/apache2/ssl/gestio.local.crt
+    SSLCertificateKeyFile /etc/apache2/ssl/gestio.local.key
+
+    <Directory /var/www/gestio.local/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/gestio_error.log
+    CustomLog ${APACHE_LOG_DIR}/gestio_access.log combined
+</VirtualHost>
+```
+
+### 5. Déploiement de l'application
+
+```bash
+# Copier les fichiers
+sudo mkdir -p /var/www/gestio.local
+sudo cp -r /chemin/vers/GestioSeances/* /var/www/gestio.local/
+
+# Permissions
+sudo chown -R www-data:www-data /var/www/gestio.local
+sudo chmod -R 755 /var/www/gestio.local
+sudo chmod -R 775 /var/www/gestio.local/storage
+
+# Activer le site
+sudo a2ensite gestio.local-ssl.conf
+sudo systemctl restart apache2
+```
+
+### 6. Configuration Base de Données
+
+```bash
+# Connexion MySQL
+sudo mysql -u root
+
+# Création de la base et de l'utilisateur
+CREATE DATABASE gestioseances CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'gestio_admin'@'localhost' IDENTIFIED BY 'password123';
+GRANT ALL PRIVILEGES ON gestioseances.* TO 'gestio_admin'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+# Import du schéma
+mysql -u gestio_admin -p gestioseances < /var/www/gestio.local/database/schema_final.sql
+```
+
+### 7. Test du déploiement
+
+```bash
+# Test DNS
+dig @192.168.0.116 www.gestio.local +short
+# Résultat attendu: 192.168.0.116
+
+# Test Web
+curl -k https://www.gestio.local
 ```
 
 ---
@@ -258,30 +390,24 @@ chmod 755 storage/logs
 
 ```php
 <?php
-return [
-    // Base de données
-    'db' => [
-        'host' => 'localhost',
-        'name' => 'gestio_seances',
-        'user' => 'root',
-        'pass' => 'votre_mot_de_passe'
-    ],
-    
-    // Email (SMTP)
-    'mail' => [
-        'host' => 'smtp.gmail.com',
-        'port' => 587,
-        'user' => 'votre-email@gmail.com',
-        'pass' => 'mot_de_passe_application'
-    ],
-    
-    // Application
-    'app' => [
-        'name' => 'GestioSeances',
-        'url' => 'http://localhost/gestio-seances',
-        'debug' => true
-    ]
-];
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'gestioseances');
+define('DB_USER', 'gestio_admin');
+define('DB_PASS', 'password123');
+
+define('APP_NAME', 'GestioSeances');
+define('APP_URL', 'https://www.gestio.local');
+
+// Rôles
+define('ROLE_PROFESSEUR', 'professeur');
+define('ROLE_ASSISTANTE', 'assistante');
+define('ROLE_DIRECTEUR', 'directeur');
+
+// Statuts des demandes
+define('STATUT_EN_ATTENTE', 'en_attente');
+define('STATUT_VALIDEE_ASSISTANTE', 'validee_assistante');
+define('STATUT_APPROUVEE', 'approuvee');
+define('STATUT_REJETEE', 'rejetee');
 ```
 
 ---
@@ -290,10 +416,13 @@ return [
 
 | Membre | Rôle | Modules Assignés |
 |--------|------|------------------|
-| **Développeur 1** | Lead Backend | Authentification, Sécurité, Core |
-| **Développeur 2** | Backend | Demandes, Validations, Notifications |
-| **Développeur 3** | Frontend + Backend | Interfaces, Planning, Calendrier |
-| **Développeur 4** | Backend + Documentation | Administration, Stats, BDD, Docs |
+| **Iliass Zarquan** | Lead Backend | Authentification, Sécurité, Core, Infrastructure |
+| **Jaafar Ouazzani Chahdi** | Backend | Demandes, Validations, Notifications |
+| **Aymane Drissi Bourhanbour** | Frontend + Backend | Interfaces, Planning, Calendrier |
+| **Aya Sefri** | Backend + Documentation | Administration, Stats, BDD, Docs |
+
+### Encadrant
+**Pr. Amamou Ahmed** - Université Euromed de Fès - EIDIA
 
 ---
 
@@ -345,6 +474,8 @@ return [
 | **SQL Injection** | Requêtes préparées PDO exclusivement |
 | **Upload malveillant** | Vérification MIME, limite 5 Mo, renommage |
 | **Session Hijacking** | Régénération ID, vérification IP/UA |
+| **Communication** | HTTPS obligatoire (SSL/TLS) |
+| **DNS** | allow-transfer none, restriction des requêtes |
 
 ---
 
@@ -352,24 +483,29 @@ return [
 
 - [x] Code source PHP (architecture MVC)
 - [x] Script SQL (schema + données de test)
-- [ ] Documentation technique
-- [ ] Diagrammes UML
-- [ ] Guide utilisateur
-- [ ] Maquettes des interfaces
-- [ ] Rapport de tests
+- [x] Infrastructure DNS (BIND9)
+- [x] Serveur Web sécurisé (Apache2 + SSL)
+- [x] Configuration VirtualHost
+- [x] Rapport de projet (LaTeX)
+- [x] Présentation (Beamer)
+- [x] README complet
 
 ---
 
-## 📅 Planning Prévisionnel
+## 🧪 Tests
 
-| Tâches |
-|--------|
-|Setup projet, BDD, authentification |
-|Module demandes, upload fichiers |
-|Module planning, calendrier |
-|Module admin, notifications |
-|Statistiques, rapports |
-|Tests, documentation, déploiement |
+### Comptes de test
+
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Professeur | prof@uemf.ac.ma | password123 |
+| Assistante | assistante@uemf.ac.ma | password123 |
+| Directeur | directeur@uemf.ac.ma | password123 |
+
+### URLs de test
+
+- Application : `https://www.gestio.local`
+- Test DNS : `dig @192.168.0.116 www.gestio.local`
 
 ---
 
@@ -384,7 +520,20 @@ return [
 
 ## 📄 Licence
 
-Projet académique - EIDIA 2025
+Projet académique - Université Euromed de Fès - EIDIA - Cybersécurité
+
+**Année universitaire 2025-2026**
 
 ---
 
+<div align="center">
+
+**🎓 GestioSeances**
+
+*Application développée dans le cadre du module Administration Système et Réseau*
+
+**Université Euromed de Fès - EIDIA - Cybersécurité**
+
+Janvier 2026
+
+</div>
