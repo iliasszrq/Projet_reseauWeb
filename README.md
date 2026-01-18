@@ -4,6 +4,20 @@
 
 ---
 
+## 👨‍💻 Réalisé par
+
+| | | | |
+|:---:|:---:|:---:|:---:|
+| **Iliass Zarquan** | **Jaafar Ouazzani Chahdi** | **Aymane Drissi Bourhanbour** | **Aya Sefri** |
+
+**Encadré par : Pr. Amamou Ahmed**
+
+*Université Euromed de Fès - EIDIA - Filière Cybersécurité*
+
+*Année universitaire 2025-2026*
+
+---
+
 ## 📋 Table des Matières
 
 - [Présentation du Projet](#-présentation-du-projet)
@@ -416,13 +430,13 @@ define('STATUT_REJETEE', 'rejetee');
 
 | Membre | Rôle | Modules Assignés |
 |--------|------|------------------|
-| **Iliass Zarquan** | Lead Backend | Authentification, Sécurité, Core, Infrastructure |
-| **Jaafar Ouazzani Chahdi** | Backend | Demandes, Validations, Notifications |
-| **Aymane Drissi Bourhanbour** | Frontend + Backend | Interfaces, Planning, Calendrier |
-| **Aya Sefri** | Backend + Documentation | Administration, Stats, BDD, Docs |
+| **Iliass Zarquan** | Lead Backend & Infrastructure | Authentification, Sécurité, Core, DNS, Serveur Web |
+| **Jaafar Ouazzani Chahdi** | Backend Developer | Demandes, Validations, Notifications, Workflow |
+| **Aymane Drissi Bourhanbour** | Full Stack Developer | Interfaces utilisateur, Planning, Calendrier, Frontend |
+| **Aya Sefri** | Backend & Documentation | Administration, Statistiques, Base de données, Documentation |
 
 ### Encadrant
-**Pr. Amamou Ahmed** - Université Euromed de Fès - EIDIA
+**Pr. Amamou Ahmed** - Université Euromed de Fès - EIDIA - Module Administration Système et Réseau
 
 ---
 
